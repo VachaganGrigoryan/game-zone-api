@@ -7,6 +7,10 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
+django-filter = "==2.4.0"
+djangorestframework-simplejwt = "*"
+django-versatileimagefield = "*"
+markdown = "*"
 
 [dev-packages]
 

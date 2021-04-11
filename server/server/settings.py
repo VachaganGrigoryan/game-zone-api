@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'versatileimagefield',
     'todo',
     'accounts',
+    'checkers',
 ]
 
 MIDDLEWARE = [

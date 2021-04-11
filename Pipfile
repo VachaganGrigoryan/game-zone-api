@@ -11,6 +11,7 @@ django-filter = "==2.4.0"
 djangorestframework-simplejwt = "*"
 django-versatileimagefield = "*"
 markdown = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 

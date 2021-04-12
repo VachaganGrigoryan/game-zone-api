@@ -26,19 +26,22 @@ class GameBoard(models.Model):
 
     id = models.AutoField(primary_key=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
-    winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, related_name='winner')
-    queue = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, related_name='queue')
-    players = models.ManyToManyField(User, max_length=2, blank=True, related_name='players')
-    histories = models.ManyToManyField('Histories', blank=True)
-    board = ArrayField(ArrayField(models.IntegerField(blank=True, default=0)))
+    winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='winner')
+    queue = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='queue')
+    players = models.ManyToManyField(User, max_length=2, blank=True, null=True, related_name='players')
+    histories = models.ManyToManyField('Histories', blank=True, null=True)
+    board = ArrayField(ArrayField(models.IntegerField(blank=True, null=True), blank=True, null=True), blank=True, null=True)
     board_length = models.IntegerField(choices=BoardLength.choices, blank=False)
     created = models.DateTimeField(auto_now_add=True)
-    ended = models.DateTimeField(blank=True)
+    ended = models.DateTimeField(blank=True, null=True)
     is_ended = models.BooleanField(default=False)
     is_full = models.BooleanField(default=False)
 
     def __str__(self):
         return self.owner.__str__()
+
+    def set_board(self, board):
+        self.board = board
 
 
 class Histories(models.Model):

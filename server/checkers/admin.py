@@ -3,7 +3,7 @@ from .models import GameBoard, Histories
 
 
 class GameBoardAdmin(admin.ModelAdmin):
-    list_display = ('owner', 'winner', 'board', 'created', 'is_ended')
+    list_display = ('owner', 'winner', 'created', 'is_ended')
 
 
 class HistoriesAdmin(admin.ModelAdmin):

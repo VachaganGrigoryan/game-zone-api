@@ -92,33 +92,16 @@ class PauseApi(APIView):
 # vachagan@OMEN:~$ sudo -u postgres createuser --interactive
 # Enter name of role to add: vachagan
 # Shall the new role be a superuser? (y/n) y
-# vachagan@OMEN:~$ sudo -u postgres psql
-# psql (12.6 (Ubuntu 12.6-0ubuntu0.20.04.1))
-# Type "help" for help.
-#
-# postgres=# createdb checkers
-# postgres-# \q
-# vachagan@OMEN:~$ sudo -u postgres createdb checkers
 # vachagan@OMEN:~$ sudo su - postgres
 # postgres@OMEN:~$ psql
 # psql (12.6 (Ubuntu 12.6-0ubuntu0.20.04.1))
 # Type "help" for help.
 #
 # postgres=# CREATE DATABASE checkers;
-# ERROR:  database "checkers" already exists
-# postgres=# CREAR
-# postgres-#
-# postgres-#
-# postgres-# ;
-# ERROR:  syntax error at or near "CREAR"
-# LINE 1: CREAR
-#         ^
+
 # postgres=# CREATE USER vachagan WITH PASSWORD '542652';
-# ERROR:  role "vachagan" already exists
 # postgres=# CREATE USER checkers WITH PASSWORD '542652';
 # CREATE ROLE
-# postgres=# GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;
-# ERROR:  database "myproject" does not exist
 # postgres=# GRANT ALL PRIVILEGES ON DATABASE checkers TO checkers;
 # GRANT
 # postgres=# \q

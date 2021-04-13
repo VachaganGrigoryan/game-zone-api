@@ -28,8 +28,7 @@ class GameBoard(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
     winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='winner')
     queue = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='queue')
-    players = models.ManyToManyField(User, max_length=2, blank=True, null=True, related_name='players')
-    histories = models.ManyToManyField('Histories', blank=True, null=True)
+    players = models.ManyToManyField(User, max_length=2, blank=True, related_name='players')
     board = ArrayField(ArrayField(models.IntegerField(blank=True, null=True), blank=True, null=True), blank=True, null=True)
     board_length = models.IntegerField(choices=BoardLength.choices, blank=False)
     created = models.DateTimeField(auto_now_add=True)
@@ -38,7 +37,7 @@ class GameBoard(models.Model):
     is_full = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.owner.__str__()
+        return f'{self.owner}'
 
     def set_board(self, board):
         self.board = board
@@ -46,14 +45,16 @@ class GameBoard(models.Model):
 
 class Histories(models.Model):
     id = models.AutoField(primary_key=True)
-    board_id = models.ForeignKey(GameBoard, on_delete=models.CASCADE, related_name='game_board')
+    game_board = models.ForeignKey(GameBoard, on_delete=models.CASCADE, related_name='histories')
     board = ArrayField(ArrayField(models.IntegerField(blank=True, default=0)))
     step = ArrayField(models.IntegerField(blank=True))
     step_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True)
     step_date = models.DateTimeField(auto_now_add=True)
+    order = models.IntegerField()
+
+    class Meta:
+        unique_together = ['game_board', 'order']
+        ordering = ['order']
 
     def __str__(self):
-        return self.board_id.__str__()
-
-
-
+        return f'{self.game_board} {self.order}'

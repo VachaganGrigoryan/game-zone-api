@@ -2,18 +2,26 @@ from rest_framework import serializers
 from .models import GameBoard, Histories, init_board
 
 
+# Histories serializer
+class HistoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Histories
+        fields = '__all__'
+
+
 # GameBoard serializer
 class GameBoardSerializer(serializers.ModelSerializer):
+    histories = HistoriesSerializer(many=True, read_only=True)
+
     class Meta:
         model = GameBoard
-        fields = '__all__'
-        # exclude = ['histories', 'board', 'created']
+        fields = ['id', 'owner', 'winner', 'queue', 'players', 'board', 'histories']
+        # exclude = ['created']
 
     def create(self, validated_data):
         board = GameBoard(
             owner=validated_data['owner'],
             queue=validated_data['queue'],
-            histories=validated_data['histories'],
             board_length=validated_data['board_length'],
         )
         board.set_board(init_board(board.board_length))
@@ -32,9 +40,3 @@ class GameBoardSerializer(serializers.ModelSerializer):
     #     instance.save()
     #     return instance
 
-
-# Histories serializer
-class HistoriesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Histories
-        fields = '__all__'

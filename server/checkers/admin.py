@@ -7,7 +7,7 @@ class GameBoardAdmin(admin.ModelAdmin):
 
 
 class HistoriesAdmin(admin.ModelAdmin):
-    list_display = ('board_id', 'board', 'step', 'step_by', 'step_date')
+    list_display = ('game_board', 'board', 'step', 'step_by', 'step_date')
 
 
 admin.site.register(GameBoard, GameBoardAdmin)

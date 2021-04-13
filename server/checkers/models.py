@@ -39,9 +39,6 @@ class GameBoard(models.Model):
     def __str__(self):
         return f'{self.owner}'
 
-    def set_board(self, board):
-        self.board = board
-
 
 class Histories(models.Model):
     id = models.AutoField(primary_key=True)

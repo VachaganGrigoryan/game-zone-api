@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
 
-from .models import GameBoard
+from .models import GameBoard, init_board
 from .serializers import GameBoardSerializer
 
 
@@ -25,10 +25,19 @@ class GameBoardViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
-        for item in request:
-            print(request[item])
-
-        return Response({})
+        data: dict = request.data.get("items") if 'items' in request.data else request.data
+        current_user_id = request.user.id
+        data.update({
+            'owner': current_user_id,
+            'queue': current_user_id,
+            'board': init_board(data['board_length'])
+        })
+        many = isinstance(data, list)
+        serializer = self.serializer_class(data=data, many=many)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, pk=None):
         queryset = GameBoard.objects.all()

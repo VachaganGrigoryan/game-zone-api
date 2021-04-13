@@ -15,16 +15,13 @@ class GameBoardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GameBoard
-        fields = ['id', 'owner', 'winner', 'queue', 'players', 'board', 'histories']
+        fields = '__all__'
+        # fields = ['id', 'owner', 'winner', 'queue', 'players', 'board', 'board_length', 'histories']
         # exclude = ['created']
 
     def create(self, validated_data):
-        board = GameBoard(
-            owner=validated_data['owner'],
-            queue=validated_data['queue'],
-            board_length=validated_data['board_length'],
-        )
-        board.set_board(init_board(board.board_length))
+        print(validated_data)
+        board = GameBoard(**validated_data)
         board.save()
         return board
 

@@ -28,7 +28,7 @@ class GameBoard(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
     winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='winner')
     queue = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='queue')
-    players = models.ManyToManyField(User, max_length=2, blank=True, related_name='players')
+    players = models.ManyToManyField(User, maxk_length=2, blank=True, related_name='players')
     board = ArrayField(ArrayField(models.IntegerField(blank=True, null=True), blank=True, null=True), blank=True, null=True)
     board_length = models.IntegerField(choices=BoardLength.choices, blank=False)
     created = models.DateTimeField(auto_now_add=True)

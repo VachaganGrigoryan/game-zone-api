@@ -1,7 +1,14 @@
 from django.contrib.postgres.fields import ArrayField
 from rest_framework import serializers
+from django.contrib.auth.models import User
+
 from .models import GameBoard, Histories, init_board
 
+
+class PlayerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', )
 
 # Histories serializer
 class HistoriesSerializer(serializers.ModelSerializer):
@@ -19,6 +26,14 @@ class GameBoardSerializer(serializers.ModelSerializer):
         fields = '__all__'
         # fields = ['id', 'owner', 'winner', 'queue', 'players', 'board', 'board_length', 'histories']
 
+    def create(self, validated_data):
+        print(validated_data)
+        board = GameBoard(**validated_data)
+        board.save()
+        board.players.add(validated_data["owner"])
+        return board
+        # return Histories.objects.create(**validated_data)
+
     def update(self, instance, validated_data):
         print(instance, validated_data)
         # instance.title = validated_data.get('title', instance.title)
@@ -27,6 +42,18 @@ class GameBoardSerializer(serializers.ModelSerializer):
         # instance.language = validated_data.get('language', instance.language)
         # instance.style = validated_data.get('style', instance.style)
         # instance.save()
+        return instance
+
+
+class GameBoardPlayersSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GameBoard
+        fields = ('players', )
+
+    def update(self, instance, validated_data):
+        print(instance, validated_data)
+
         return instance
 
 

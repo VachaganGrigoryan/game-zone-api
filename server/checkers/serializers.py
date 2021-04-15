@@ -5,11 +5,6 @@ from django.contrib.auth.models import User
 from .models import GameBoard, Histories, init_board
 
 
-class PlayerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', )
-
 # Histories serializer
 class HistoriesSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,37 +19,37 @@ class GameBoardSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameBoard
         fields = '__all__'
-        # fields = ['id', 'owner', 'winner', 'queue', 'players', 'board', 'board_length', 'histories']
 
     def create(self, validated_data):
-        print(validated_data)
         board = GameBoard(**validated_data)
         board.save()
-        board.players.add(validated_data["owner"])
+        board.players.set([validated_data["owner"]])
         return board
-        # return Histories.objects.create(**validated_data)
 
-    def update(self, instance, validated_data):
-        print(instance, validated_data)
-        # instance.title = validated_data.get('title', instance.title)
-        # instance.code = validated_data.get('code', instance.code)
-        # instance.linenos = validated_data.get('linenos', instance.linenos)
-        # instance.language = validated_data.get('language', instance.language)
-        # instance.style = validated_data.get('style', instance.style)
-        # instance.save()
-        return instance
+    # def update(self, instance, validated_data):
+    #     instance.players.set(validated_data['players'])
+    #     return instance
+    #
+    # def validate_players(self, players):
+    #     if len(players) > 2:
+    #         raise serializers.ValidationError({"board": "board is already is fulled."})
+    #     return players
 
 
 class GameBoardPlayersSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GameBoard
-        fields = ('players', )
+        fields = ('id', 'players')
 
     def update(self, instance, validated_data):
-        print(instance, validated_data)
-
+        instance.players.set(validated_data['players'])
         return instance
+
+    def validate_players(self, players):
+        if len(players) > 2:
+            raise serializers.ValidationError({"board": "board is already is fulled."})
+        return players
 
 
 class GameBoardStepSerializer(serializers.ModelSerializer):
@@ -63,9 +58,8 @@ class GameBoardStepSerializer(serializers.ModelSerializer):
         model = Histories
         fields = ('step', )
 
-    def create(self, validated_data):
-        print(validated_data)
-        return Histories(**validated_data)
+    # def create(self, validated_data):
+    #     return Histories(**validated_data)
 
     def update(self, instance, validated_data):
         Histories.objects.create(
@@ -76,11 +70,10 @@ class GameBoardStepSerializer(serializers.ModelSerializer):
             order=len(instance.histories.all())
         )
 
-        instance.board = validated_data.get('board', instance.board)
-        instance.queue = validated_data.get('queue', instance.queue)
-
+        # instance.board = validated_data.get('board', instance.board)
+        # instance.queue = validated_data.get('queue', instance.queue)
         # instance.winner = validated_data.get('winner', instance.winner)
         # instance.ended = validated_data.get('ended', instance.ended)
-        instance.is_ended = validated_data.get('is_ended', instance.is_ended)
-
+        # instance.is_ended = validated_data.get('is_ended', instance.is_ended)
+        instance.save()
         return instance

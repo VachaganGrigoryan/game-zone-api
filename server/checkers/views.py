@@ -68,10 +68,13 @@ class GameBoardViewSet(viewsets.ViewSet):
 
     def partial_update(self, request, pk=None):
         game_board = self.get_object(pk=pk)
-        serializer = GameBoardPlayersSerializer(game_board, data=request.data)
+        data = {
+            'players': [*[user.id for user in game_board.players.all()], request.user.id],
+        }
+        serializer = GameBoardPlayersSerializer(game_board, data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(self.serializer_class(game_board).data)
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):

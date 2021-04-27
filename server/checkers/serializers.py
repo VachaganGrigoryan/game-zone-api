@@ -1,26 +1,36 @@
 from django.contrib.postgres.fields import ArrayField
+from django.db.models import Q
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from .models import GameBoard, Histories, init_board
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        # fields = '__all__'
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', ]
+
+
 # Histories serializer
 class HistoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Histories
-        fields = ['id', 'order', 'step', 'step_date']
+        fields = '__all__'
+        # fields = ['id', 'order', 'step', 'step_by', 'step_date']
 
 
 # GameBoard serializer
 class GameBoardSerializer(serializers.ModelSerializer):
-    histories = HistoriesSerializer(many=True, read_only=True)
+    # histories = HistoriesSerializer(many=True, read_only=True)
 
     class Meta:
         model = GameBoard
         fields = '__all__'
 
     def create(self, validated_data):
+        print(validated_data)
         board = GameBoard(**validated_data)
         board.save()
         board.players.set([validated_data["owner"]])
@@ -44,9 +54,11 @@ class GameBoardPlayersSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.players.set(validated_data['players'])
+        # instance.is_full = False
         return instance
 
     def validate_players(self, players):
+        print(players, self.fields)
         if len(players) > 2:
             raise serializers.ValidationError({"board": "board is already is fulled."})
         return players
@@ -66,10 +78,10 @@ class GameBoardStepSerializer(serializers.ModelSerializer):
             game_board=instance,
             step_by=instance.queue,
             board=instance.board,
-            step=validated_data.get('step', [1, 2]),
-            order=len(instance.histories.all())
+            step=validated_data.get('step', []),
+            order=instance.histories.count()
         )
-
+        instance.queue = instance.players.filter(~Q(id=instance.queue.id)).first()
         # instance.board = validated_data.get('board', instance.board)
         # instance.queue = validated_data.get('queue', instance.queue)
         # instance.winner = validated_data.get('winner', instance.winner)
@@ -77,3 +89,14 @@ class GameBoardStepSerializer(serializers.ModelSerializer):
         # instance.is_ended = validated_data.get('is_ended', instance.is_ended)
         instance.save()
         return instance
+
+
+# GameBoard serializer
+class GameBoardDetailsSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    players = UserSerializer(many=True, read_only=True)
+    histories = HistoriesSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = GameBoard
+        fields = '__all__'

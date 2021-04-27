@@ -4,8 +4,10 @@ from rest_framework.decorators import action
 from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
 
+from .permissions import IsPlayerUser, IsPlayerTurn, IsGameBoardFull
 from .models import GameBoard, init_board
-from .serializers import GameBoardSerializer, GameBoardStepSerializer, GameBoardPlayersSerializer
+from .serializers import GameBoardSerializer, GameBoardStepSerializer, GameBoardPlayersSerializer, \
+    GameBoardDetailsSerializer
 
 
 class GameBoardViewSet(viewsets.ViewSet):
@@ -18,7 +20,7 @@ class GameBoardViewSet(viewsets.ViewSet):
     """
     queryset = GameBoard.objects.all()
     serializer_class = GameBoardSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, IsPlayerUser, IsPlayerTurn)
 
     @staticmethod
     def get_object(pk):
@@ -40,8 +42,7 @@ class GameBoardViewSet(viewsets.ViewSet):
             'queue': current_user_id,
             'board': init_board(data.get('board_length', 8))
         })
-        many = isinstance(data, list)
-        serializer = self.serializer_class(data=data, many=many)
+        serializer = self.serializer_class(data=data, many=False)
         if serializer.is_valid():
             serializer.save()
             # serializer.players.add(request.user)
@@ -52,7 +53,8 @@ class GameBoardViewSet(viewsets.ViewSet):
         # game_boards = GameBoard.objects.all()
         # game_board = get_object_or_404(game_boards, pk=pk)
         game_board = self.get_object(pk=pk)
-        serializer = self.serializer_class(game_board)
+        self.check_object_permissions(request, game_board)
+        serializer = GameBoardDetailsSerializer(game_board)
         return Response(serializer.data)
 
     def update(self, request, pk=None):
@@ -60,6 +62,7 @@ class GameBoardViewSet(viewsets.ViewSet):
         # game_boards = GameBoard.objects.all()
         # game_board = get_object_or_404(game_boards, pk=pk)
         game_board = self.get_object(pk=pk)
+        self.check_object_permissions(request, game_board)
         serializer = GameBoardStepSerializer(game_board, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -69,7 +72,7 @@ class GameBoardViewSet(viewsets.ViewSet):
     def partial_update(self, request, pk=None):
         game_board = self.get_object(pk=pk)
         data = {
-            'players': [*[user.id for user in game_board.players.all()], request.user.id],
+            'players': list(*zip(*game_board.players.values_list('id'))) + [request.user.id],
         }
         serializer = GameBoardPlayersSerializer(game_board, data=data)
         if serializer.is_valid():

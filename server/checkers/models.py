@@ -25,6 +25,7 @@ class GameBoard(models.Model):
         long = 10, 'Long'
 
     id = models.AutoField(primary_key=True)
+    # uuid = models.CharField(max_length=255, unique=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
     winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='winner')
     queue = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='queue')
@@ -36,8 +37,15 @@ class GameBoard(models.Model):
     is_ended = models.BooleanField(default=False)
     is_full = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name_plural = 'Checkers Board'
+        ordering = ['id']
+
+    def __repr__(self):
+        return f'<>'
+
     def __str__(self):
-        return f'[{self.id}] - {self.owner} - {self.board}'
+        return f'Board: {self.id}] | Players: {self.players}'
 
 
 class Histories(models.Model):
@@ -50,6 +58,7 @@ class Histories(models.Model):
     order = models.IntegerField(default=1)
 
     class Meta:
+        verbose_name_plural = 'Checkers Histories'
         unique_together = ['game_board', 'order']
         ordering = ['order']
 

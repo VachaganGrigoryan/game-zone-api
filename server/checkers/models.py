@@ -10,13 +10,15 @@ def init_board(length):
     l_middle = length // 2
 
     def get_num(i, j):
+        if (i + j) % 2 == 0:
+            return 0
         if i < l_middle - 1:
             return 2
         if i <= l_middle:
             return 1
         return 3
 
-    return [[get_num(i, j) if (i + j) % 2 else 0 for j in range(length)] for i in range(length)]
+    return [[get_num(i, j) for j in range(length)] for i in range(length)]
 
 
 class GameBoard(models.Model):
@@ -25,7 +27,7 @@ class GameBoard(models.Model):
         long = 10, 'Long'
 
     id = models.AutoField(primary_key=True)
-    # uuid = models.CharField(max_length=255, unique=True)
+    uuid = models.CharField(max_length=255, unique=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
     winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='winner')
     queue = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='queue')
@@ -42,7 +44,7 @@ class GameBoard(models.Model):
         ordering = ['id']
 
     def __repr__(self):
-        return f'<>'
+        return f"GameBoard('{self.id}', '{self.uuid}', '{self.players}')"
 
     def __str__(self):
         return f'Board: {self.id}] | Players: {self.players}'

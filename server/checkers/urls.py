@@ -16,9 +16,9 @@ game_board_connect = GameBoardViewSet.as_view({
 })
 
 urlpatterns = [
-    path("api/game-boards/", game_board_list, name="game-board-list"),
-    path("api/game-boards/<int:pk>/", game_board_detail, name="game-board-detail"),
-    path("api/game-boards/<int:pk>/connect/", game_board_connect, name="game-board-connect"),
+    path("game-boards/", game_board_list, name="game-board-list"),
+    path("game-boards/<str:uuid>/", game_board_detail, name="game-board-detail"),
+    path("game-boards/<str:uuid>/connect/", game_board_connect, name="game-board-connect"),
     # path("api/create", CreateApi.as_view(), name="create"),
     # path('api/delete', DeleteApi.as_view(), name="delete"),
     # path('api/finish', FinishApi.as_view(), name="finish"),

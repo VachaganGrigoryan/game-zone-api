@@ -48,22 +48,16 @@ class GameBoardViewSet(viewsets.ViewSet):
         serializer = self.serializer_class(data=data, many=False)
         if serializer.is_valid():
             serializer.save()
-            # serializer.players.add(request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, uuid=None):
-        # game_boards = GameBoard.objects.all()
-        # game_board = get_object_or_404(game_boards, uuid=uuid)
         game_board = self.get_object(uuid=uuid)
         self.check_object_permissions(request, game_board)
         serializer = GameBoardDetailsSerializer(game_board)
         return Response(serializer.data)
 
     def update(self, request, uuid=None):
-        # game_board = GameBoard.objects.get(uuid=uuid)
-        # game_boards = GameBoard.objects.all()
-        # game_board = get_object_or_404(game_boards, uuid=uuid)
         game_board = self.get_object(uuid=uuid)
         self.check_object_permissions(request, game_board)
         serializer = GameBoardStepSerializer(game_board, data=request.data)
@@ -75,6 +69,7 @@ class GameBoardViewSet(viewsets.ViewSet):
     def partial_update(self, request, uuid=None):
         game_board = self.get_object(uuid=uuid)
         data = {
+            'uuid': uuid,
             'players': list(*zip(*game_board.players.values_list('id'))) + [request.user.id],
         }
         serializer = GameBoardPlayersSerializer(game_board, data=data)
@@ -84,20 +79,6 @@ class GameBoardViewSet(viewsets.ViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, uuid=None):
-        # game_board = GameBoard.objects.get(uuid=uuid)
-        # game_boards = GameBoard.objects.all()
-        # game_board = get_object_or_404(game_boards, uuid=uuid)
         game_board = self.get_object(uuid=uuid)
         game_board.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(detail=True, methods=['post'])
-    def do_step(self, request, uuid=None):
-        game_board = self.get_object()
-        serializer = PasswordSerializer(data=request.DATA)
-        if serializer.is_valid():
-
-            return Response({'status': 'password set'})
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)

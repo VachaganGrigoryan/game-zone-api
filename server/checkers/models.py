@@ -65,4 +65,4 @@ class Histories(models.Model):
         ordering = ['order']
 
     def __str__(self):
-        return f'{self.game_board} {self.order}'
+        return f'{self.step} | {self.step_by} | {self.order}'

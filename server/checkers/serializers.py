@@ -50,7 +50,7 @@ class GameBoardPlayersSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GameBoard
-        fields = ('id', 'players')
+        fields = ('uuid', 'players')
 
     def update(self, instance, validated_data):
         instance.players.set(validated_data['players'])
@@ -89,6 +89,12 @@ class GameBoardStepSerializer(serializers.ModelSerializer):
         # instance.is_ended = validated_data.get('is_ended', instance.is_ended)
         instance.save()
         return instance
+
+    def validate_is_full(self):
+        print(players, self.fields)
+        if len(players) > 2:
+            raise serializers.ValidationError({"board": "board is already is fulled."})
+        return
 
 
 # GameBoard serializer

@@ -4,7 +4,7 @@ from .views import dashboard
 
 
 urlpatterns = [
-    path("api/dashboard/", DashboardApi.as_view(), name="dashboard"),
-    path('api/register', RegisterApi.as_view()),
-    path('api/users', ListUsers.as_view())
+    path("dashboard/", DashboardApi.as_view(), name="dashboard"),
+    path('register', RegisterApi.as_view()),
+    path('users', ListUsers.as_view())
 ]

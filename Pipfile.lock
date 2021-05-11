@@ -26,11 +26,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:0604e84c4fb698a5e53e5857b5aea945b2f19a18f25f10b8748dbdf935788927",
-                "sha256:21f0f9643722675976004eb683c55d33c05486f94506672df3d6a141546f389d"
+                "sha256:0a1d195ad65c52bf275b8277b3d49680bd1137a5f55039a806f25f6b9752ce3d",
+                "sha256:18dd3145ddbd04bf189ff79b9954d08fda5171ea7b57bf705789fea766a07d50"
             ],
             "index": "pypi",
-            "version": "==3.2"
+            "version": "==3.2.2"
         },
         "django-cors-headers": {
             "hashes": [
@@ -162,11 +162,11 @@
         },
         "pyjwt": {
             "hashes": [
-                "sha256:a5c70a06e1f33d81ef25eecd50d50bd30e34de1ca8b2b9fa3fe0daaabcf69bf7",
-                "sha256:b70b15f89dc69b993d8a8d32c299032d5355c82f9b5b7e851d1a6d706dffe847"
+                "sha256:934d73fbba91b0483d3857d1aff50e96b2a892384ee2c17417ed3203f173fca1",
+                "sha256:fba44e7898bbca160a2b2b501f492824fc8382485d3a6f11ba5d0c1937ce6130"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==2.0.1"
+            "version": "==2.1.0"
         },
         "python-magic": {
             "hashes": [

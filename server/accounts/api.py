@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics, permissions, authentication, mixins
+from rest_framework import generics, permissions, authentication
 from .serializers import RegisterSerializer, UserSerializer
 from django.contrib.auth.models import User
 
@@ -12,21 +12,14 @@ class DashboardApi(APIView):
         return Response(content)
 
 
-class ListUsers(APIView):
-    """
-    View to list all users in the system.
+class ListUsersApi(generics.GenericAPIView):
 
-    * Requires token authentication.
-    * Only admin users are able to access this view.
-    """
-    authentication_classes = [authentication.TokenAuthentication]  # ToDo
+    authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAdminUser]
+    serializer_class = UserSerializer
 
     def get(self, request, format=None):
-        """
-        Return a list of all users.
-        """
-        usernames = [user.username for user in User.objects.all()]
+        usernames = [UserSerializer(user).data for user in User.objects.all()]
         return Response(usernames)
 
 

@@ -1,22 +1,35 @@
+
+# sudo apt install postgresql postgresql-contrib
+# vachagan@OMEN:~$ sudo -i -u postgres
+# postgres@OMEN:~$ psql
+# psql (12.6 (Ubuntu 12.6-0ubuntu0.20.04.1))
+# Type "help" for help.
 #
-# def init_board(length):
-#     if length not in [8, 10]:
-#         return ValueError("The Board should be have 8 or 10 length!")
+# postgres=# \q
+# postgres@OMEN:~$ exit
+# logout
+# vachagan@OMEN:~$ sudo -u postgres psql
+# psql (12.6 (Ubuntu 12.6-0ubuntu0.20.04.1))
+# Type "help" for help.
 #
-#     l_middle = length // 2
+# postgres=# createuser --interactive
+# postgres-# sudo -u postgres createuser --interactive
+# postgres-# \q
+# vachagan@OMEN:~$ sudo -u postgres createuser --interactive
+# Enter name of role to add: vachagan
+# Shall the new role be a superuser? (y/n) y
+# vachagan@OMEN:~$ sudo su - postgres
+# postgres@OMEN:~$ psql
+# psql (12.6 (Ubuntu 12.6-0ubuntu0.20.04.1))
+# Type "help" for help.
 #
-#     def get_num(i, j):
-#         if i < l_middle - 1:
-#             return 2
-#         if i <= l_middle:
-#             return 1
-#         return 3
-#
-#     return [[get_num(i, j) if (i + j) % 2 else 0 for j in range(length)] for i in range(length)]
-#
-#
-# if __name__ == '__main__':
-#     import json
-#
-#     for line in init_board(8):
-#         print(line)
+# postgres=# CREATE DATABASE checkers;
+
+# postgres=# CREATE USER vachagan WITH PASSWORD '542652';
+# postgres=# CREATE USER checkers WITH PASSWORD '542652';
+# CREATE ROLE
+# postgres=# GRANT ALL PRIVILEGES ON DATABASE checkers TO checkers;
+# GRANT
+# postgres=# \q
+# postgres@OMEN:~$ exit
+# logout

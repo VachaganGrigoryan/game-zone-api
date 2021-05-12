@@ -25,7 +25,7 @@ SECRET_KEY = '@ds)-$vmefmahsa@$ln59)d6gq9kq(9h%&wm82y#iv5i*l%tmd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.3']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.3']
 
 # Application definition
 
@@ -157,7 +157,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
@@ -214,24 +214,24 @@ SIMPLE_JWT = {
 #     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 # }
 
-
-SWAGGER_SETTINGS = {
-    "exclude_namespaces": [],  # List URL namespaces to ignore
-    "SUPPORTED_SUBMIT_METHODS": [  # Specify which methods to enable in Swagger UI
-        'get',
-        'post',
-        'put',
-        'delete'
-    ],
-    'SECURITY_DEFINITIONS': {
-        'api_key': {
-            'type': 'apiKey',
-            'in': 'header',
-            'name': 'Authorization'
-        }
-    },
-    'USE_SESSION_AUTH': True,
-    'JSON_EDITOR': True,
-    'REFETCH_SCHEMA_ON_LOGOUT': True
-
-}
+#
+# SWAGGER_SETTINGS = {
+#     "exclude_namespaces": [],  # List URL namespaces to ignore
+#     "SUPPORTED_SUBMIT_METHODS": [  # Specify which methods to enable in Swagger UI
+#         'get',
+#         'post',
+#         'put',
+#         'delete'
+#     ],
+#     'SECURITY_DEFINITIONS': {
+#         'api_key': {
+#             'type': 'apiKey',
+#             'in': 'header',
+#             'name': 'Authorization'
+#         }
+#     },
+#     'USE_SESSION_AUTH': True,
+#     'JSON_EDITOR': True,
+#     'REFETCH_SCHEMA_ON_LOGOUT': True
+#
+# }

@@ -1,5 +1,16 @@
 import React, {Component} from 'react';
-import Login from './Login'
+
+
+async function loginUserWithRefresh(token) {
+    return fetch('http://127.0.0.1:8000/api/token/refresh/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(token)
+    }).then(data => data.json())
+}
+
 
 class DashBoard extends Component {
     constructor(props) {
@@ -17,27 +28,43 @@ class DashBoard extends Component {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.props.token}`
+                'Authorization': `Bearer ${this.props.token.access}`
             }
-        })
-        .then(res => res.json())
-        .then(
-            (result) => {
-                this.setState({
-                    isLoaded: true,
-                    items: result
-                });
-            },
-            // Note: it's important to handle errors here
-            // instead of a catch() block so that we don't swallow
-            // exceptions from actual bugs in components.
-            (error) => {
-                this.setState({
-                    isLoaded: true,
-                    error
-                });
+        }).then(response => {
+            if (response.status === 401) {
+
+                fetch('http://127.0.0.1:8000/api/token/refresh/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "refresh": this.props.token.refresh
+                    })
+                }).then(data => {
+                    console.log(data.json());
+                    this.props.setToken(data.json())
+                })
+
             }
-        )
+        }).then(res => res.json())
+            .then(
+                (result) => {
+                    this.setState({
+                        isLoaded: true,
+                        items: result
+                    });
+                },
+                // Note: it's important to handle errors here
+                // instead of a catch() block so that we don't swallow
+                // exceptions from actual bugs in components.
+                (error) => {
+                    this.setState({
+                        isLoaded: true,
+                        error
+                    });
+                }
+            )
     }
 
     render() {

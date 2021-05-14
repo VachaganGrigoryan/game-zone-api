@@ -10,8 +10,8 @@ import Menu from "./components/Menu";
 function App() {
 
     const {token, setToken} = useToken();
-    console.log(token);
-    if (!token) {
+    console.log(token?.refresh);
+    if (!token?.access) {
         return <Login setToken={setToken}/>
     }
 
@@ -22,7 +22,7 @@ function App() {
                 <BrowserRouter>
                     <Switch>
                         <Route path="/dashboard">
-                            <DashBoard token={token}/>
+                            <DashBoard token={token} setToken={setToken}/>
                         </Route>
                     </Switch>
                 </BrowserRouter>

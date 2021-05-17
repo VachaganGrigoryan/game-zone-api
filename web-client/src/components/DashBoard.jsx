@@ -42,8 +42,8 @@ class DashBoard extends Component {
                         "refresh": this.props.token.refresh
                     })
                 }).then(data => {
-                    console.log(data.json());
-                    this.props.setToken(data.json())
+                    console.log(data);
+                    this.props.setToken(data)
                 })
 
             }

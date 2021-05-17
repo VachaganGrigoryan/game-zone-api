@@ -36,8 +36,8 @@ function Login({setToken}) {
 
                 <div className="form-floating">
                     <input type="text" className="form-control" id="floatingInput"
-                           placeholder="name@example.com" onChange={e => setUserName(e.target.value)}/>
-                    <label htmlFor="floatingInput">Email address</label>
+                           placeholder="Username" onChange={e => setUserName(e.target.value)}/>
+                    <label htmlFor="floatingInput">Username</label>
                 </div>
                 <div className="form-floating">
                     <input type="password" className="form-control" id="floatingPassword"

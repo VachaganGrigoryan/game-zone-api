@@ -7,7 +7,6 @@ import './App.css';
 
 import Login from "./components/Login";
 
-import useToken from "./components/useToken";
 import DashBoard from "./components/DashBoard";
 import Menu from "./components/Menu";
 
@@ -22,12 +21,10 @@ function App() {
     return (
         <BrowserRouter>
             <Fragment>
-                <Menu />
+                <Menu currentUser={currentUser} />
                 <Switch>
                     <Route exact path="/login" component={Login} />
-                    <Route path="/dashboard">
-                        <DashBoard/>
-                    </Route>
+                    <Route exact path="/dashboard" component={DashBoard}/>
                 </Switch>
             </Fragment>
         </BrowserRouter>

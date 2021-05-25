@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import './App.css';
 
 import Login from "./components/Login";
+import Signup from "./components/Signup";
 
 import DashBoard from "./components/DashBoard";
 import Menu from "./components/Menu";
@@ -23,7 +24,8 @@ function App() {
             <Fragment>
                 <Menu currentUser={currentUser} />
                 <Switch>
-                    <Route exact path="/login" component={Login} />
+                    <Route exact path="/login" component={Login}/>
+                    <Route exact path="/register" component={Signup}/>
                     <Route exact path="/dashboard" component={DashBoard}/>
                 </Switch>
             </Fragment>

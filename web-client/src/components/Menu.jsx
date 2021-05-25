@@ -30,13 +30,13 @@ const Menu = ({currentUser}) => {
                             {currentUser && (
                                 <Fragment>
                                     <li>
-                                        <Link href="/" className="nav-link text-white">
+                                        <Link to={"/"} className="nav-link text-white">
                                             <FontAwesomeIcon icon={faHome} className="bi d-block mx-auto mb-1"/>
                                             Home
                                         </Link>
                                     </li>
                                     <li>
-                                        <Link href="/dashboard" className="nav-link text-white">
+                                        <Link to={"/dashboard"} className="nav-link text-white">
                                             <FontAwesomeIcon icon={faTachometerAlt}
                                                              className="bi d-block mx-auto mb-1"/>
                                             Dashboard
@@ -45,7 +45,7 @@ const Menu = ({currentUser}) => {
                                     <li>
                                         <Link to={"/profile"} className="nav-link text-white">
                                             <FontAwesomeIcon icon={faUserCircle} className="bi d-block mx-auto mb-1"/>
-                                            {currentUser.username}
+                                            {currentUser.username} UserName
                                         </Link>
                                     </li>
                                 </Fragment>

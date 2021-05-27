@@ -75,17 +75,17 @@ function Login(props) {
         <main className="form-signin">
             <Form onSubmit={handleLogin} ref={form}>
 
-                 <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-            {/*//     <div className="form-floating">*/}
-            {/*//         <input type="text" className="form-control" id="floatingInput"*/}
-            {/*//                placeholder="Username" onChange={e => setUserName(e.target.value)}/>*/}
-            {/*//         <label htmlFor="floatingInput">Username</label>*/}
-            {/*//     </div>*/}
-            {/*//     <div className="form-floating">*/}
-            {/*//         <input type="password" className="form-control" id="floatingPassword"*/}
-            {/*//                placeholder="Password" onChange={e => setPassword(e.target.value)}/>*/}
-            {/*        <label htmlFor="floatingPassword">Password</label>*/}
-            {/*    </div>*/}
+                <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+                {/*//     <div className="form-floating">*/}
+                {/*//         <input type="text" className="form-control" id="floatingInput"*/}
+                {/*//                placeholder="Username" onChange={e => setUserName(e.target.value)}/>*/}
+                {/*//         <label htmlFor="floatingInput">Username</label>*/}
+                {/*//     </div>*/}
+                {/*//     <div className="form-floating">*/}
+                {/*//         <input type="password" className="form-control" id="floatingPassword"*/}
+                {/*//                placeholder="Password" onChange={e => setPassword(e.target.value)}/>*/}
+                {/*        <label htmlFor="floatingPassword">Password</label>*/}
+                {/*    </div>*/}
                 <div className="form-floating">
                     <Input
                         type="text"

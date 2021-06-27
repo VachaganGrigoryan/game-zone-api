@@ -3,7 +3,8 @@ from django.db.models import Q
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from .models import GameBoard, Histories, init_board
+from .models import GameBoard, Histories
+from .utils import init_board
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -43,10 +43,13 @@ INSTALLED_APPS = [
 
     'rest_framework_swagger',
 
-    'accounts',
+    'account',
     'dashboard',
     'checkers',
 ]
+
+AUTH_USER_MODEL = 'account.SlaveUser'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

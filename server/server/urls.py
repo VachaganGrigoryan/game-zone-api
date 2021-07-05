@@ -13,29 +13,60 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
-from rest_framework import routers
-from rest_framework.schemas import get_schema_view
-from rest_framework_simplejwt import views as jwt_views
+from rest_framework import routers, permissions
 
-# from todo import views
-#
-# router = routers.DefaultRouter()
-# router.register(r'todos', views.TodoView, 'todo')
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+from account import urls as account_urls
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Game Zone API",
+      default_version='v0',
+      description="Game Zone API documentation",
+      terms_of_service="",
+      contact=openapi.Contact(email="vachagan.grigoryan.it@gmail.com"),
+   ),
+   public=True,
+   permission_classes=[permissions.AllowAny],
+)
+
+
+class DefaultRouter(routers.DefaultRouter):
+    def extend(self, app_router):
+        self.registry.extend(app_router.registry)
+
+
+router = DefaultRouter()
+# router.extend(account_urls)
+# router.extend(marketplace_urls)
+
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('admin/', admin.site.urls),
 
-    path('redoc/', TemplateView.as_view(template_name='redoc.html', extra_context={'schema_url': 'openapi-schema'}), name='redoc'),
-    path('api/docs/', TemplateView.as_view(template_name='swagger-ui.html', extra_context={'schema_url': 'openapi-schema'}), name='swagger-ui'),
-    path('openapi/', get_schema_view(title="Checkers API", description="API for checkers …", version="1.0.0"), name='openapi-schema'),
-
-    path('api/token/', jwt_views.TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
-
+    path('api/accounts/', include('account.urls')),
     path('api/dashboard/', include('dashboard.urls')),
-    path('api/account/', include('account.urls')),
     path('api/checkers/', include('checkers.urls')),
+
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('swagger.<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

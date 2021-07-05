@@ -1,0 +1,8 @@
+Hi {{ first_name }},
+
+Welcome to Game Zone.
+
+{{ base_url }}/verify/{{ code }}
+
+Much love.
+

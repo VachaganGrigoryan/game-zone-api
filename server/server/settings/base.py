@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import environ
+
+env = environ.Env()
+environ.Env.read_env('.env')  # reading .env file
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@ds)-$vmefmahsa@$ln59)d6gq9kq(9h%&wm82y#iv5i*l%tmd'
+SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.3']
 
@@ -37,19 +41,23 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'rest_framework',
     'django_filters',
-    'versatileimagefield',
+]
 
-    'rest_framework_swagger',
+THIRD_PARTY_APPS = [
+    'drf_yasg',
+    'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
+]
 
+PROJECT_APPS = [
     'account',
+    'core',
     'dashboard',
     'checkers',
 ]
 
 AUTH_USER_MODEL = 'account.SlaveUser'
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -67,8 +75,7 @@ ROOT_URLCONF = 'server.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        # PurePath.joinpath(BASE_DIR, Path('templates')) # os.path.join(BASE_DIR, 'templates')
+        'DIRS': [BASE_DIR / '../templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,21 +93,14 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'checkers',
-        'USER': 'checkers',
-        'PASSWORD': '542652',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': env.str('DB_NAME'),
+        'USER': env.str('DB_USER'),
+        'PASSWORD': env.str('DB_PASSWORD'),
+        'HOST': env.str('DB_HOST'),
+        'PORT': env.str('DB_PORT'),
     }
 }
 
@@ -138,29 +138,30 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+STATIC_ROOT = BASE_DIR / '../staticfiles'
+MEDIA_ROOT = BASE_DIR / '../media'
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-
 MEDIA_URL = '/media/'
-# MEDIA_ROOT = PurePath.joinpath(BASE_DIR, Path('media'))  # os.path.join(BASE_DIR, 'media')
 
-VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
-    'product_headshot': [
-        ('full_size', 'url'),
-        ('thumbnail', 'thumbnail__100x100'),
-        ('medium_square_crop', 'crop__400x400'),
-        ('small_square_crop', 'crop__50x50')
-    ]
-}
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    BASE_DIR / '../static',
+)
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    #     'rest_framework.permissions.IsAdminUser',
+    # ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
 }
@@ -178,63 +179,48 @@ CORS_ORIGIN_WHITELIST = [
 #     "https://www.test-cors.org",
 # ]
 #
-#
-# CSRF_TRUSTED_ORIGINS = [
-#     'www.test2-cors.org',
-# ]
-#
 # CORS_ALLOW_CREDENTIALS = True
 
 
+# JWT authentication
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=5),
     'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': False,
 }
-# DEFAULTS = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-#     'ROTATE_REFRESH_TOKENS': False,
-#     'BLACKLIST_AFTER_ROTATION': True,
-#
-#     'ALGORITHM': 'HS256',
-#     'SIGNING_KEY': settings.SECRET_KEY,
-#     'VERIFYING_KEY': None,
-#     'AUDIENCE': None,
-#     'ISSUER': None,
-#
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-#     'USER_ID_FIELD': 'id',
-#     'USER_ID_CLAIM': 'user_id',
-#
-#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-#     'TOKEN_TYPE_CLAIM': 'token_type',
-#
-#     'JTI_CLAIM': 'jti',
-#
-#     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-#     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-#     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
-# }
 
-#
-# SWAGGER_SETTINGS = {
-#     "exclude_namespaces": [],  # List URL namespaces to ignore
-#     "SUPPORTED_SUBMIT_METHODS": [  # Specify which methods to enable in Swagger UI
-#         'get',
-#         'post',
-#         'put',
-#         'delete'
-#     ],
-#     'SECURITY_DEFINITIONS': {
-#         'api_key': {
-#             'type': 'apiKey',
-#             'in': 'header',
-#             'name': 'Authorization'
-#         }
-#     },
-#     'USE_SESSION_AUTH': True,
-#     'JSON_EDITOR': True,
-#     'REFETCH_SCHEMA_ON_LOGOUT': True
-#
-# }
+# Email configuration
+AUTH_EMAIL_VERIFICATION = True
+
+FRONTEND_URL = env.str('FRONTEND_URL')
+BACKEND_URL = env.str('BACKEND_URL')
+
+EMAIL_FROM = env.str('ACCOUNT_EMAIL_DEFAULT_EMAIL_FROM', '')
+EMAIL_BCC = env.str('ACCOUNT_EMAIL_DEFAULT_EMAIL_BCC', '')
+
+EMAIL_HOST = env.str('ACCOUNT_EMAIL_EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = env.str('ACCOUNT_EMAIL_EMAIL_PORT', 587)
+EMAIL_HOST_USER = env.str('ACCOUNT_EMAIL_EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = env.str('ACCOUNT_EMAIL_EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+# Swagger configuration
+SWAGGER_SETTINGS = {
+    'LOGIN_URL': 'rest_framework:login',
+    'LOGOUT_URL': 'rest_framework:logout',
+    'USE_SESSION_AUTH': True,
+    'APIS_SORTER': 'alpha',
+    'SHOW_REQUEST_HEADERS': True,
+    'DOC_EXPANSION': 'none',
+    'JSON_EDITOR': True,
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'scheme': 'Bearer',
+            'name': 'Authorization',
+            'in': 'header',
+        },
+    },
+}

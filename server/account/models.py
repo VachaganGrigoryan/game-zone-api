@@ -101,6 +101,7 @@ class SlaveUser(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _('user')
         verbose_name_plural = _('users')
+        ordering = ['-id']
 
     def clean(self):
         super().clean()
@@ -196,7 +197,7 @@ class SignUpCode(AbcBaseCode):
         verbose_name = 'Signup Code'
         verbose_name_plural = 'Signup Codes'
 
-    def send_signup_mail(self, prefix):
+    def send_signup_mail(self):
         self.send_mail(prefix='signup_email')
 
 

@@ -1,24 +1,7 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.contrib.auth.models import User
-
-
-def init_board(length):
-    if length not in [8, 10]:
-        return ValueError("The Board should be have 8 or 10 length!")
-
-    l_middle = length // 2
-
-    def get_num(i, j):
-        if (i + j) % 2 == 0:
-            return 0
-        if i < l_middle - 1:
-            return 2
-        if i <= l_middle:
-            return 1
-        return 3
-
-    return [[get_num(i, j) for j in range(length)] for i in range(length)]
+# from django.contrib.auth.models import User
+from account.models import SlaveUser
 
 
 class GameBoard(models.Model):
@@ -28,10 +11,10 @@ class GameBoard(models.Model):
 
     id = models.AutoField(primary_key=True)
     uuid = models.CharField(max_length=255, unique=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
-    winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='winner')
-    queue = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='queue')
-    players = models.ManyToManyField(User, max_length=2, blank=True, related_name='players')
+    owner = models.ForeignKey(SlaveUser, on_delete=models.CASCADE, related_name='owner')
+    winner = models.ForeignKey(SlaveUser, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='winner')
+    queue = models.ForeignKey(SlaveUser, on_delete=models.DO_NOTHING, blank=True, null=True, related_name='queue')
+    players = models.ManyToManyField(SlaveUser, max_length=2, blank=True, related_name='players')
     board = ArrayField(ArrayField(models.IntegerField(blank=True, null=True), blank=True, null=True), blank=True, null=True)
     board_length = models.IntegerField(choices=BoardLength.choices, blank=False)
     created = models.DateTimeField(auto_now_add=True)
@@ -55,7 +38,7 @@ class Histories(models.Model):
     game_board = models.ForeignKey(GameBoard, on_delete=models.CASCADE, related_name='histories')
     board = ArrayField(ArrayField(models.IntegerField(blank=True, default=0)))
     step = ArrayField(models.IntegerField(blank=True))
-    step_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, blank=True)
+    step_by = models.ForeignKey(SlaveUser, on_delete=models.DO_NOTHING, blank=True)
     step_date = models.DateTimeField(auto_now_add=True)
     order = models.IntegerField(default=1)
 

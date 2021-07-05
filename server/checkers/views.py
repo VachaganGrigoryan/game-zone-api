@@ -7,7 +7,8 @@ from rest_framework import status, viewsets, permissions
 from rest_framework.response import Response
 
 from .permissions import IsPlayerUser, IsPlayerTurn, IsGameBoardFull
-from .models import GameBoard, init_board
+from .models import GameBoard
+from .utils import init_board
 from .serializers import GameBoardSerializer, GameBoardStepSerializer, GameBoardPlayersSerializer, \
     GameBoardDetailsSerializer
 

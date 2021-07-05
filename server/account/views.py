@@ -79,7 +79,7 @@ class SignUp(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SignUpVerify(generics.GenericAPIView):
+class SignUpVerify(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, f=None):
@@ -105,7 +105,7 @@ class LoginTokenObtainPair(TokenViewBase):
     serializer_class = serializers.LoginTokenObtainPairSerializer
 
 
-class Logout(generics.GenericAPIView):
+class Logout(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
@@ -163,7 +163,7 @@ class ForgotPassword(generics.GenericAPIView):
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
-class ForgetPasswordVerify(generics.GenericAPIView):
+class ForgetPasswordVerify(APIView):
     permission_classes = (AllowAny,)
 
     def get(self, request, f=None):

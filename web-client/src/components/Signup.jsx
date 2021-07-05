@@ -1,14 +1,12 @@
 import React, {useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Redirect} from 'react-router-dom';
 
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
+import {isEmail} from "validator";
 
-import {login} from "../actions/auth";
-
-import '../css/Լogin.css';
+import {signup} from "../actions/auth";
 
 const required = (value) => {
     if (!value) {
@@ -20,16 +18,48 @@ const required = (value) => {
     }
 };
 
+const validEmail = (value) => {
+    if (!isEmail(value)) {
+        return (
+            <div className="alert alert-danger" role="alert">
+                This is not valid email.
+            </div>
+        )
+    }
+}
 
-function Login(props) {
+
+const vusername = (value) => {
+  if (value.length < 3 || value.length > 20) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        The username must be between 3 and 20 characters.
+      </div>
+    );
+  }
+};
+
+const vpassword = (value) => {
+  if (value.length < 6 || value.length > 40) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        The password must be between 6 and 40 characters.
+      </div>
+    );
+  }
+};
+
+
+function Signup(props) {
     const form = useRef();
     const checkBtn = useRef();
 
     const [username, setUsername] = useState();
+    const [firstName, setFirstName] = useState();
+    const [lastName, setLastName] = useState();
     const [password, setPassword] = useState();
-    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
 
-    const {isLoggedIn} = useSelector(state => state.auth);
     // const {message} = useSelector(state => state.message);
 
     const dispatch = useDispatch();
@@ -39,53 +69,54 @@ function Login(props) {
         setUsername(username);
     };
 
+    const onChangeFirstName = (e) => {
+        const firstName = e.target.value;
+        setFirstName(firstName);
+    };
+
+    const onChangeLastName = (e) => {
+        const lastName = e.target.value;
+        setLastName(lastName);
+    };
+
     const onChangePassword = (e) => {
         const password = e.target.value;
         setPassword(password);
     };
 
-    const handleLogin = (e) => {
+    const handleSignup = (e) => {
         e.preventDefault();
 
-        setLoading(true);
+        setSuccess(false);
 
         form.current.validateAll();
 
-        console.log(username, password)
         if (checkBtn.current.context._errors.length === 0) {
-            dispatch(login(username, password))
+            dispatch(signup(username, firstName, lastName, password))
                 .then(() => {
-                    props.history.push("/profile");
-                    window.location.reload();
+                    setSuccess(true);
                 })
                 .catch(() => {
-                    setLoading(false);
+                    setSuccess(false);
                 });
-        } else {
-            setLoading(false);
         }
     };
-    console.log(isLoggedIn);
-
-    if (isLoggedIn) {
-        return <Redirect to="/profile"/>;
-    }
 
     return (
-        <main className="form-signin">
-            <Form onSubmit={handleLogin} ref={form}>
+        <main className="form-signup">
+            <Form onSubmit={handleSignup} ref={form}>
 
-                <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-                {/*//     <div className="form-floating">*/}
-                {/*//         <input type="text" className="form-control" id="floatingInput"*/}
-                {/*//                placeholder="Username" onChange={e => setUserName(e.target.value)}/>*/}
-                {/*//         <label htmlFor="floatingInput">Username</label>*/}
-                {/*//     </div>*/}
-                {/*//     <div className="form-floating">*/}
-                {/*//         <input type="password" className="form-control" id="floatingPassword"*/}
-                {/*//                placeholder="Password" onChange={e => setPassword(e.target.value)}/>*/}
-                {/*        <label htmlFor="floatingPassword">Password</label>*/}
-                {/*    </div>*/}
+                 <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+            {/*//     <div className="form-floating">*/}
+            {/*//         <input type="text" className="form-control" id="floatingInput"*/}
+            {/*//                placeholder="Username" onChange={e => setUserName(e.target.value)}/>*/}
+            {/*//         <label htmlFor="floatingInput">Username</label>*/}
+            {/*//     </div>*/}
+            {/*//     <div className="form-floating">*/}
+            {/*//         <input type="password" className="form-control" id="floatingPassword"*/}
+            {/*//                placeholder="Password" onChange={e => setPassword(e.target.value)}/>*/}
+            {/*        <label htmlFor="floatingPassword">Password</label>*/}
+            {/*    </div>*/}
                 <div className="form-floating">
                     <Input
                         type="text"
@@ -113,12 +144,12 @@ function Login(props) {
                 </div>
 
                 <div className="form-group">
-                    <button className="w-100 btn btn-lg btn-primary" disabled={loading}>
-                        {loading && (
-                            <span className="spinner-border spinner-border-sm"></span>
-                        )}
-                        <span>Login</span>
-                    </button>
+                    {/*<button className="w-100 btn btn-lg btn-primary" disabled={loading}>*/}
+                    {/*    {loading && (*/}
+                    {/*        <span className="spinner-border spinner-border-sm"></span>*/}
+                    {/*    )}*/}
+                    {/*    <span>Login</span>*/}
+                    {/*</button>*/}
                 </div>
 
                 {/*{message && (*/}
@@ -151,4 +182,4 @@ function Login(props) {
     )
 }
 
-export default Login;
+export default Signup;

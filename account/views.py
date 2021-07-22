@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 
-from account import models, serializers
+from . import models, serializers
 from core.email_sender import send_multi_format_email
 
 

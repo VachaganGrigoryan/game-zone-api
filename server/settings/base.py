@@ -54,7 +54,8 @@ PROJECT_APPS = [
     'account',
     'core',
     'dashboard',
-    'checkers',
+
+    'games.checkers',
 ]
 
 AUTH_USER_MODEL = 'account.SlaveUser'

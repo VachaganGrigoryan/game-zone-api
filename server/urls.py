@@ -57,9 +57,9 @@ urlpatterns = [
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
 
-    path('api/accounts/', include('account.urls')),
-    path('api/dashboard/', include('dashboard.urls')),
-    path('api/checkers/', include('games.checkers.urls')),
+    path('accounts/', include('account.urls')),
+    path('dashboard/', include('dashboard.urls')),
+    path('checkers/', include('games.checkers.urls')),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('swagger.<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
